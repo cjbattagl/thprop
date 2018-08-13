@@ -1,0 +1,52 @@
+\begin{figure}[htbp]
+  \centering
+\begin{tikzpicture}[scale=0.5,namenode/.style={scale=.75}]
+	\def\ix{3} %
+	\def\iy{3} %
+	\def\iz{2.5} %
+	\def\corescale{1.75}
+	\def\rx{\ix/\corescale}
+	\def\ry{\iy/\corescale}
+	\def\rz{\iz/\corescale}
+	\coordinate (XFrontLowerLeft) at (0,0);
+	\draw (XFrontLowerLeft) rectangle ++ (\ix,\iy); %
+	\begin{scope}[shift={(XFrontLowerLeft)},canvas is zx plane at y=\iy,rotate=90]
+	  \draw (0,0) rectangle ++ (\ix,\iz); %
+	\end{scope}
+	\begin{scope}[shift={(XFrontLowerLeft)},canvas is zy plane at x=\ix,rotate=90]
+	  \draw (0,0) rectangle ++ (\iy,\iz); %
+	\end{scope}
+	\node[namenode] at ($(XFrontLowerLeft) + (0.5*\ix, 0.5*\iy)$)  {$\T{X}$};
+	\coordinate (ApproxCtr) at ($(XFrontLowerLeft) + (\ix+0.4*\iz,0.75*\iy) + (0.75,0)$);
+
+	\node[namenode] at (ApproxCtr) {$\approx$};
+	\coordinate (U1LowerLeft) at ($(ApproxCtr) - (0,0.75*\iy) + (0.75,0)$);
+	\draw (U1LowerLeft) rectangle ++ (\ry,\iy);
+
+	\node[namenode] at ($(U1LowerLeft)+(0.5*\ry, 0.5*\iy)$)  {$\Mn{U}{1}$};
+	\coordinate (GFrontLowerLeft) at ($(U1LowerLeft) + (\ry+0.5,1)$);
+	\draw (GFrontLowerLeft) rectangle ++ (\rx,\ry);
+	\begin{scope}[shift={(GFrontLowerLeft)},canvas is zx plane at y=\ry,rotate=90]
+	  \draw (0,0) rectangle ++ (\rx,\rz);
+	\end{scope}
+	\begin{scope}[shift={(GFrontLowerLeft)},canvas is zy plane at x=\rx,rotate=90]
+	  \draw (0,0) rectangle ++ (\ry,\rz);
+	\end{scope}
+	\node[namenode] at ($(GFrontLowerLeft)+(0.5*\rx,.5*\ry)$)  {$\T{G}$};
+	\coordinate (U2LowerLeft) at ($(GFrontLowerLeft) + (\rx+\rz*0.4+0.5,0.5)$);
+	\draw (U2LowerLeft) rectangle ++ (\ix,\rx); %
+
+	\node[namenode] at ($(U2LowerLeft)+(0.5*\ix,0.5*\rx)$)  {$\Mn{U}{2}$};
+	\coordinate (U3LowerLeft) at ($(GFrontLowerLeft) + (0.5,\ry+.8)$);
+	\begin{scope}[shift={(U3LowerLeft)},canvas is zx plane at y=0,rotate=90]
+	  \draw (0,0) rectangle ++ (\rz,\iz); %
+	\end{scope}
+	\node[namenode] at ($(U3LowerLeft)+(1.2,0.5)$) {$\Mn{U}{3}$};
+\end{tikzpicture}
+  \caption{Tucker decomposition of 3rd-order tensor ($d=3$).}
+  \label{fig:tucker}
+\end{figure}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

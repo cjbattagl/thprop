@@ -1,0 +1,13 @@
+Output/
+bare_conf.synctex.gz
+.DS_Store
+*.blg
+*.aux
+*.log
+*.out
+bare_conf.pdf
+bare_conf.aux
+bare_conf.bbl
+bare_conf.blg
+bare_conf.log
+bare_conf.out

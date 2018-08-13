@@ -1,0 +1,19 @@
+\begin{abstract}
+An emerging area of research in computational science considers efficiently computing on data sets that are 
+inherently multi-way-- that is, they can be represented by higher-order \emph{tensors}. 
+Tensor \emph{decompositions} are a leading method for compressing or finding structure in multi-way 
+data sets, and increasing the computational scalability of these decompositions is an open research problem.
+
+It is tempting to think of tensor computations as inherently more costly than matrix computations, e.g. 
+with notions such as the `curse of dimensionality.' A key argument of this proposal is that the 
+multi-way structure of tensors surprisingly creates numerous avenues for increasing scalability that are not available
+in the realm of matrix computations.
+
+Recent developments in randomized numerical linear algebra utilize techniques such as random projection and 
+sampling to perform common operations such as low-rank 
+decomposition and least squares much faster than traditional methods, with the 
+drawback that error bounds must often be restated in probabilistic terms. We propose that these randomized methods can be extended to tensors in a way that uniquely takes advantage of their multi-way structure. 
+
+Towards this goal we develop efficient, high-performance implementations of randomized algorithms for leading tensor decompositions. We demonstrate in our existing work that the CANDECOMP/PARAFAC (CP) decomposition can be performed with randomized least squares, and that the tensor structure actually produces favorable conditions for the algorithm-- in fact, the randomized algorithm can extract more robust features than the leading deterministic algorithm at much lower cost. Our proposal targets scaling up the Tucker decomposition in distributed memory using methods drawn from the randomized SVD, and also targets the Tensor Train decomposition. 
+% Finally, we demonstrate how partition structure in power-law graphs can be rapidly discovered using a simple streaming algorithm in distributed memory, and compare scalability and quality to leading alternatives.
+\end{abstract}

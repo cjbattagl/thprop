@@ -1,0 +1,47 @@
+\pgfplotstableread[col sep=comma]{stackbar-experiments/runtime.csv}\datatable
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+        xbar stacked,
+        legend style={
+        legend columns=4,
+            % at={(xticklabel cs:0.5)},
+            at={(axis cs:15,2.3)},
+            anchor=north,
+            draw=none
+        },
+        ytick=data,
+        axis y line*=none,
+        axis x line*=bottom,
+        tick label style={font=\footnotesize},
+        legend style={font=\footnotesize},
+        label style={font=\footnotesize},
+        % symbolic y coords={1,2,3},
+        % xtick={0,100,200,300},
+        width=0.90\linewidth,
+        bar width=6mm,
+        xlabel={Time ($s$)},
+        yticklabels from table=\datatable{Method},
+        xmin=0,
+        % xmax=600,
+        area legend,
+        y=8mm,
+        enlarge y limits={abs=0.625},
+        cycle list name = barlist,
+        % xlabel=Time ($s$),
+        xlabel near ticks,
+    ]
+    \foreach \i in {1,...,16} {
+        \addplot+ table[
+            x index=\i,
+            y expr=\coordindex,
+            % \fill[index of colormap={4 of GnBu-7}]
+        ] {\datatable};
+    }
+    \legend{Sketch, Gram, Eigensolve, TTM}
+    \end{axis}  
+\end{tikzpicture}
+\caption{Detailed time breakdown for a parallel run of \sthosvd and \hosvdsketch on the HCII data set over a process grid of size $4\times2\times1\times5$. We target a core size of $50\times50\times33\times50$, for a compression ratio of about 2000X.}
+\label{fig:stackedbar}
+\end{figure}

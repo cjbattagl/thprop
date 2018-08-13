@@ -1,0 +1,49 @@
+A standard method for computing the Tucker decomposition is the Higher-Order SVD 
+(\hosvd)~\cite{Lathauwer00amultilinear}, a generalization of the singular value 
+decomposition to higher-order datasets, i.e., $d$-way arrays with $d>2$.
+% 
+A direct approach to the \hosvd involves computing a series of SVDs of 
+unfolded tensors to compute the orthogonal factor matrices whose 
+columns approximately span the columns of the unfolded tensor (i.e., the 
+mode-$k$ fiber space). We will refer to this computation as the Mode-wise Truncated Fiber Space Basis Computation (\MTFSBC).
+Following this operation, the resulting factor matrices are applied to the input tensor to compress the original data.
+%
+The Tucker decomposition for $d=3$ is
+illustrated in~\cref{fig:thirdordertucker}, where the original $d$-way tensor is 
+denoted by $\T{X}$, the $d$ factor matrices are denoted as $\Mn{U}{k}$ for $k=1,2,3$,
+and the $d$-way core tensor is denoted as $\T{G}$. 
+If the data tensor has nearly low-rank structure, then the decomposed tensor uses significantly
+less storage.
+%
+
+\input{tikzfigs/tucker.tex} %%%%%% Tucker Figure %%%%%%
+%
+We consider a distributed-memory application for large dense tensors, as might arise in large-scale 
+scientific simulations. For instance, we consider a five-way tensor representing three spatial dimensions, 
+a time dimension, and a number of different variables. A user may wish to examine this data on a local 
+machine with limited memory or to store many simulations in limited storage, and the \hosvd has been 
+shown to be a highly scalable method for performing this compression.
+The current state of the art for distributed \hosvd is TuckerMPI\footnote{\url{http://tensors.gitlab.io/TuckerMPI/}}, 
+based on the work of Austin, Ballard, and Kolda~\cite{AuBaKo16}. The \MTFSBC kernel is performed with a distributed Gram matrix computation followed by a local eigensolve. The factors are then applied to the input tensor using a distributed tensor-matrix multiplication, forming the dense core tensor. The core tensor and factor matrices can be used to construct an approximation to the original data or any subset thereof.
+
+In this work, we consider efficiently performing the \MTFSBC kernel in distributed memory by applying methods 
+from randomized numerical linear algebra. We show how a series of local multiplications followed by a small 
+global communication can result in a \emph{sketch} of the original tensor that fits in local memory. 
+We see up to a 7X speedup in computing the \MTFSBC.
+% with comparable error. 
+Though randomized methods work with only a subset of the data, the errors are very close.
+Finally, we apply this to the efficient computation of a Tucker decomposition for the compression of scientific data.
+%The following is a more detailed breakdown of our contributions:
+%Using this sketch we can, with the help of our theoretical results, compute an \hosvd that still satisfies (with high probability) the error tolerance. 
+% \TODO{Include a plot of compression ratio / speed between TuckerMPI and sketching method.}
+We summarize our contributions as follows:
+\begin{itemize}
+  \item We propose, implement, and develop a cost analysis for an efficient sketch-based \MTFSBC in 
+  distributed memory, using randomization to reduce computation and communication. This method exploits the Kronecker structure of the sketching operation to reduce computation.
+  \item We introduce a new parallel method for a sequence of tensor-times-matrix operations that trades extra computation for reduced communication and show how and when this can be used to further increase the efficiency of sketching. 
+  \item We apply our kernel to the Tucker tensor decomposition, benchmark our method on large-scale scientific 
+  data sets, and demonstrate scaling on synthetic data sets that improves upon the fastest known 
+  traditional implementation.
+  \item We provide theory to show how the error introduced through randomization can be compensated for.
+  % No previous work has considered this issue, but it is key to preserving data accuracy.
+\end{itemize}

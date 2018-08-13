@@ -1,0 +1,30 @@
+\newcommand{\FigModeErrors}[3][north east]{
+  \begin{tikzpicture}%[scale=.7]
+    \renewcommand{\datafile}{#2}
+    % \pgfmathparse{svals}
+    \edef\err{\pgfmathresult}
+    \begin{semilogyaxis}[
+      height=6cm,
+      width=\linewidth,
+      legend pos = #1,
+      ylabel={$\sigma_k$}, 
+      xlabel={$k$},
+      unbounded coords=jump,
+      ylabel near ticks,
+      every axis plot/.append style={thick}
+    ]	
+      \addplot table[x expr=\coordindex, y index=0, mark=none] {\datafile};
+      % \draw [dashed] (300,0) -- (300,10e14);
+      \draw ({axis cs:375,0}|-{rel axis cs:0,0}) -- ({axis cs:375,0}|-{rel axis cs:0,1});
+      \draw [dashed] ({axis cs:446,0}|-{rel axis cs:0,0}) -- ({axis cs:446,0}|-{rel axis cs:0,1});
+      % %
+      % \draw[dashed] (axis cs:\pgfkeysvalueof{/pgfplots/xmin},\err) -- (axis cs:\pgfkeysvalueof{/pgfplots/xmax},\err);
+      % \node [below left] at (axis cs:\pgfkeysvalueof{/pgfplots/xmax},\err) {$\epsilon/\sqrt{N}$};
+    \end{semilogyaxis}
+  \end{tikzpicture}
+}
+\begin{figure}%[tb]
+  \FigModeErrors{rawdata/svmode2.dat}{4}
+  \caption{The 1500 singular values of the mode-2 unfolding of the 5-way JICF data set (see~\cref{sec:datasets}). The truncation rank for ST-HOSVD is computed using~\cref{eqn:truncationrank} for $\epsilon=10^{-2}$, setting $r_2 = 375$ (solid line). If we instead compute with HOSVD-Sketch, we relax the truncation rank using~\cref{eqn:sketchcutoff} to compute truncation rank $\hat{r}_2 = 446$ (dashed line) to maintain error under the tolerance with probability over 99\%.\TODO{Reference in plot?}}
+  \label{fig:mode_errors}
+\end{figure}

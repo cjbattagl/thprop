@@ -1,0 +1,25 @@
+\begin{figure}[]
+  \centering
+  \begin{tikzpicture}[scale=.3,textnode/.style={scale=.6}]
+    \def\ix{3} %
+    \def\iy{4} %
+    \def\iz{2} %
+    \def\sx{1.5} %
+    \def\sy{1}
+    \def\sz{2}
+    \def\offset{0.25}
+    \def\myquad{0.5}
+    \draw (0,0) grid[xscale=\sx,yscale=\sy] (\ix,\iy); %
+    \node[textnode,below] at (0.5*\ix*\sx,0) {$\leftarrow \; n_2 \; \rightarrow$};
+    \node[textnode,rotate=90,above] at (0, 0.5*\iy*\sy)  {$\leftarrow \; n_1 \; \rightarrow$};
+    \begin{scope}[shift={(XFrontLowerLeft)},canvas is zx plane at y=\iy*\sy,rotate=90]
+      \draw (0,0) grid[xscale=\sx,yscale=\sz] (\ix,\iz); %
+    \end{scope}
+    \begin{scope}[shift={(XFrontLowerLeft)},canvas is zy plane at x=\ix*\sx,rotate=90]
+      \draw (0,0) grid[xscale=\sy,yscale=\sz] (\iy,\iz); %
+      \node[textnode,rotate=45,below] at (0,0.5*\iz*\sz) {$\leftarrow \; n_3 \; \rightarrow$};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Tensor  on $4 {\times} 3 {\times} 2$ processor grid.}
+  \label{fig:tensor_block_dist}
+\end{figure}

@@ -1,0 +1,47 @@
+% \documentclass{siamart171218}
+\documentclass[12pt]{report}
+% \documentclass[conference,10pt]{IEEEtran}
+\input{0a-packages}
+\input{0b-commands}
+
+\begin{document}
+\title{Thesis Proposal: Scalable and Practical Tensor Decompositions using Randomization}
+\author {
+	% Casey Battaglino\thanks{Georgia Institute of Technology Comp. Sci. and Engr. (\email{cbattaglino3@gatech.edu}).}
+	Casey Battaglino\thanks{Georgia Institute of Technology Computational Science and Engineering.}
+	\\ Advisor: Dr. Richard Vuduc
+}
+\maketitle
+\tableofcontents
+% Abstract
+% \input{0c-abstract}
+
+% \textbf{Thesis Statement:} Randomized methods are uniquely suitable for large-scale tensor and graph computations. This applies both to scalability in shared- and distributed-memory, but also to the robustness and quality of the output. 
+% \section{Outline}
+% \newpage
+\section{Introduction}\label{sec:introduction}
+\input{00-introduction}
+
+\section{Background and Definitions} \label{sec:background} 
+\input{01-background}
+
+% \section{Literature Review}
+
+\section{Randomized CP Decomposition} \label{sec:cp} 
+\input{02-cp}
+
+\section{Randomized Tucker Decomposition} \label{sec:tucker} 
+\input{03-tucker}
+
+\section{Randomized Tensor Train Decomposition} \label{sec:tt} 
+\input{04-tt}
+
+% \section{Streaming Graph Partitioning} \label{sec:graph}
+% \input{05-graph}
+%
+% \section{Timeline}
+
+\bibliographystyle{siamplain}
+\bibliography{bib,newbibs,tensbib}
+
+\end{document}

@@ -1,0 +1,80 @@
+\begin{figure}
+	\centering
+	% \subfloat[Weak scaling for $256{\times}256{\times}256{\times}128{\times}64$ tensor with rank $r{\times}r{\times}r{\times}r{\times}r$.]{
+	\centering
+	\begin{tikzpicture}[scale=.9]
+		\renewcommand{\datafile}{rawdata/synthreggrid.dat}
+		\begin{axis}[
+			% legend pos = north east,
+			% reverse legend,
+			axis y line*=left,
+			ylabel={Time (seconds)}, 
+			xlabel={$r_k$},
+			xtick=data,
+			xticklabels={15,30,45,60,75,90},
+			% xmode=log,
+			% log basis x ={2},
+			% ymode=log,
+			% log basis y={2},
+			y tick label style={rotate=90},
+		        ylabel near ticks,
+		]
+			\addplot table[x expr=\thisrow{Rank}, y=STHOSVD-T] {\datafile}; \label{stplot}
+			% \addlegendentry{ST-HOSVD Time}
+			\addplot table[x expr=\thisrow{Rank}, y=HOSVD-Sketch-T] {\datafile}; \label{skplot}
+			% \addlegendentry{HOSVD-Sketch Time}
+			\addplot table[x expr=\thisrow{Rank}, y=HOSVD-Sketch-MMTM-T] {\datafile}; \label{skplotmttm}
+		\end{axis}
+		\begin{axis}[
+			axis y line*=right,
+			ylabel=Error,
+			yticklabel pos=right,
+			ylabel near ticks,
+			axis x line=none,
+			ymax=1,
+			ymode=log,
+			legend pos=north west
+			% log basis y={10},
+		]
+			\addlegendimage{/pgfplots/refstyle=stplot}\addlegendentry{ST-HOSVD Time}
+			\addlegendimage{/pgfplots/refstyle=skplot}\addlegendentry{HOSVD-Sketch Time}
+			\addlegendimage{/pgfplots/refstyle=skplotmttm}\addlegendentry{HOSVD-Sketch-MTTM Time}
+			\legend{ST-HOSVD Time,HOSVD-Sketch Time,HOSVD-Sketch-MTTM Time}
+			% \addlegendimage{/pgfplots/refstyle=plot_one}\addlegendentry{plot 1}
+			% \addlegendimage{/pgfplots/refstyle=plot_two}\addlegendentry{plot 2}
+			\addlegendentry{ST-HOSVD Error}
+			\addplot[dashed,mark=o,draw=gray] table[x expr=\thisrow{Rank}, y=STHOSVD-E] {\datafile}; \label{stplott} 
+			\addlegendentry{HOSVD-Sketch Error}
+			\addplot[dashed,mark=o,draw=black] table[x expr=\thisrow{Rank}, y=HOSVD-Sketch-E] {\datafile}; \label{skplott} 
+		\end{axis}
+	\end{tikzpicture}
+	\label{fig:synthasrgrows}
+	% } \hspace{1in}
+	% \subfloat[Weak scaling for $256{\times}256{\times}256{\times}128{\times}64$ tensor with rank $r{\times}r{\times}r{\times}r{\times}r$, using $k^4$ nodes for $1\leq k\leq 6$.]{
+	% \centering
+	% % ---- Inserted File ----
+	% \begin{tikzpicture}[scale=.8]
+	% \renewcommand{\datafile}{rawdata/weak_scaling.dat}
+	% \begin{axis}[
+	% 	legend pos = north east,
+	% 	ylabel={GFLOPS Per Core}, 
+	% 	xlabel={Number of Nodes},
+	% 	xtick=data,
+	% 	xticklabels={1,,81,256,625,1296},
+	% 	ymin=0,
+	% 	ymax=19.2,
+	% 	ytick={5,10,15,19.2},
+	% 	y tick label style={rotate=90},
+	%         ylabel near ticks,
+	%         reverse legend
+	% ]
+	% 	\legend{ST-HOSVD,ST-HOSVD-Sketch}
+	% 	\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-s] {\datafile};
+	% 	\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-Sketch-s] {\datafile};
+	% \end{axis}
+	% \end{tikzpicture}
+	% % --- End Inserted File ---
+	% \label{fig:weak_scaling}
+	% }
+	\caption{Performance of ST-HOSVD vs ST-HOSVD-Sketch for a $256{\times}256{\times}256{\times}128{\times}64$ tensor (1TB) on a processor grid of dimensions $4{\times}4{\times}4{\times}4{\times}4$. The tensors are generated with rank $r_k$ in each mode for a core size of $r_k^5$. Noise is added at a rate of $\eta = 10^{-7}$.}
+\end{figure}

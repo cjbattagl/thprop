@@ -1,0 +1,53 @@
+\begin{figure*}
+\centering
+\subfloat[Strong scaling for $200{\times}200{\times}200{\times}200$ tensor with reduced size $20{\times}20{\times}20{\times}20$, using $2^k$ nodes for $0\leq k\leq 9$.]{
+	\centering
+	\begin{tikzpicture}[scale=.8]
+	\renewcommand{\datafile}{rawdata/strong_scaling.dat}
+	\begin{axis}[
+		legend pos = north east,
+		reverse legend,
+		ylabel={Time (seconds)}, 
+		xlabel={Number of Nodes},
+		xtick=data,
+		xticklabels={1,2,4,8,16,32,64,128,256,512},
+		xmode=log,
+		log basis x ={2},
+		ymode=log,
+		log basis y={2},
+		y tick label style={rotate=90},
+	        ylabel near ticks,
+	]
+		\legend{ST-HOSVD,ST-HOSVD-Sketch}
+		\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-s] {\datafile};
+		\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-Sketch-s] {\datafile};
+	\end{axis}
+	\end{tikzpicture}
+	\label{fig:strong_scaling}
+} \hspace{1in}
+\subfloat[Weak scaling for $200k{\times}200k{\times}200k{\times}200k$ tensor with reduced size $20k{\times}20k{\times}20k{\times}20k$, using $k^4$ nodes for $1\leq k\leq 6$.]{
+	\centering
+	\begin{tikzpicture}[scale=.8]
+	\renewcommand{\datafile}{rawdata/weak_scaling.dat}
+	\begin{axis}[
+		legend pos = north east,
+		ylabel={GFLOPS Per Core}, 
+		xlabel={Number of Nodes},
+		xtick=data,
+		xticklabels={1,,81,256,625,1296},
+		ymin=0,
+		ymax=19.2,
+		ytick={5,10,15,19.2},
+		y tick label style={rotate=90},
+	        ylabel near ticks,
+	        reverse legend
+	]
+		\legend{ST-HOSVD,ST-HOSVD-Sketch}
+		\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-s] {\datafile};
+		\addplot table[x expr=\thisrow{Cores}/24, y=ST-HOSVD-Sketch-s] {\datafile};
+	\end{axis}
+	\end{tikzpicture}
+	\label{fig:weak_scaling}
+}
+\caption{Scaling performance of ST-HOSVD vs ST-HOSVD-Sketch \TODO{Fake data at the moment}}
+\end{figure*}

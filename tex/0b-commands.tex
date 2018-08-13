@@ -1,0 +1,112 @@
+\usetikzlibrary{3d}
+\usetikzlibrary{patterns}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+\makeatletter
+\renewcommand*\thesection{\arabic{section}}
+\newcommand{\gettikzxy}[3]{%
+  \tikz@scan@one@point\pgfutil@firstofone#1\relax
+  \edef#2{\the\pgf@x}%
+  \edef#3{\the\pgf@y}%
+}
+\makeatother
+\graphicspath{{figs/}}
+%
+\Crefname{ALC@unique}{Line}{Lines} 
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\T}[2][]{\boldsymbol{#1\mathscr{\MakeUppercase{#2}}}}
+\newcommand{\M}[2][]{{\bm{#1\mathbf{\MakeUppercase{#2}}}}} 
+\newcommand{\Mn}[3][]{{\bm{#1\mathbf{\MakeUppercase{#2}}}}_{#3}} 
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\hspace{-.2em}\left({#1}\right)}}
+\newcommand{\inlineBigO}[1]{\ensuremath{\mathcal{O}({#1})}}
+\newcommand{\MnC}[3]{\V{#1}^{(#2)}_{#3}} % Column of matrix in sequence
+\newcommand{\V}[1]{\ensuremath{\mathbf{\lowercase{#1}}}\xspace} % vector
+\newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}
+\newcommand{\varXcopy}{\ensuremath{\widetilde{\T{X}}}\xspace}
+\newcommand{\varYcopy}{\ensuremath{\widetilde{\T{Y}}}\xspace}
+\newcommand{\varXmat}{\mathVarSubMbox{\M{X}}{mat}\xspace}
+\newcommand{\varYmat}{\mathVarSubMbox{\M{Y}}{mat}\xspace}
+\newcommand{\varSz}{\varRm{sz}\xspace}
+\newcommand{\varOrder}{\varRm{order}\xspace}
+\newcommand{\varOutSz}{\varRm{out\_sz}\xspace}
+\newcommand{\trans}{\ensuremath{\mathsf{T}}}
+\newcommand{\codeCommentLine}[1]{\STATEx \quad {\color{gray}// #1}}
+\newcommand{\Rtrue}{R_{\rm true}}
+\newcommand{\cbcomment}{\textcolor[rgb]{1,0,0}{CB: }\textcolor[rgb]{1,0,1}}
+\newcommand{\qtext}[1]{\quad\text{#1}\quad}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\LineRef}[1]{\hyperref[#1]{line~\ref{#1}}}
+\newcommand{\modeidx}{\ensuremath{m}}
+\newcommand{\samplesize}{\ensuremath{S}}
+\newcommand{\Tra}{{\sf T}} 
+\newcommand{\parens}[1]{(#1)}
+\newcommand{\Parens}[1]{\left(#1\right)}
+\newcommand{\dsquare}[1]{\llbracket #1 \rrbracket}
+\newcommand{\Dsquare}[1]{\left\llbracket #1 \right\rrbracket}
+\newcommand{\curly}[1]{\{ #1 \}}
+\newcommand{\Curly}[1]{\left\{ #1 \right\}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\datafile}{}
+%
+\newcommand{\TODO}{\red}
+\newcommand{\GB}[1]{\textcolor{blue}{#1}}
+\newcommand{\CB}[1]{\textcolor{green}{#1}}
+\newcommand{\VE}[3][]{#1{\MakeLowercase{#2}}_{#3}} 
+\newcommand{\Vn}[3][]{{\bm{#1\mathbf{\MakeLowercase{#2}}}}^{(#3)}} 
+\newcommand{\VnTra}[3][]{{\bm{#1\mathbf{\MakeLowercase{#2}}}}^{(#3)\Tra}} 
+\newcommand{\VnE}[4][]{#1{\MakeLowercase{#2}}^{(#3)}_{#4}} 
+\newcommand{\MnTra}[3][]{{\bm{#1\mathbf{\MakeUppercase{#2}}}}^{(#3)\Tra}} 
+\newcommand{\MC}[3][]{\V[#1]{#2}_{#3}} 
+\newcommand{\MnCTra}[4][]{\VnTra[#1]{#2}{#3}_{#4}} 
+\newcommand{\ME}[3][]{#1{\MakeLowercase{#2}}_{#3}} 
+\newcommand{\MnE}[4][]{#1{\MakeLowercase{#2}}^{(#3)}_{#4}} 
+\newcommand{\TS}[3][]{\M[#1]{#2}_{#3}}
+\newcommand{\TE}[3][]{#1{\MakeLowercase{#2}}_{#3}}
+\newcommand{\Mz}[3][]{\M[#1]{#2}_{(#3)}}
+\newcommand{\Oprod}{\circ} 
+\newcommand{\Kron}{\otimes} 
+\newcommand{\Khat}{\odot} 
+\newcommand{\Hada}{\ast} 
+\newcommand{\BigHada}{\mathop{\mbox{\fontsize{18}{19}\selectfont $\circledast$}}} 
+\newcommand{\Divi}{\varoslash}
+\newcommand{\Tsize}[2]{\ensuremath#1_1 \times #1_2 \times \cdots \times #1_#2}
+\newcommand{\Tidx}[2]{\ensuremath#1_1 #1_2 \cdots #1_#2}
+\newcommand{\Tentry}[2]{\ensuremath(#1_1,#1_2,\dots,#1_#2)}
+\newcommand{\nrank}[1][n]{\ensuremath\text{rank}_#1}
+\newcommand{\trank}{\ensuremath{r_t}}
+%
+\newcommand{\hosvd}{HOSVD\xspace}
+\newcommand{\sthosvd}{ST-\hosvd}
+\newcommand{\thosvd}{T-\hosvd}
+\newcommand{\hosvdsketch}{\hosvd-Sketch\xspace}
+\newcommand{\dTTM}{dc-TTM}
+\newcommand{\MTFSBC}{MTFSBC\xspace}
+
+
+
+%
+\DeclareMathOperator{\EX}{\mathbb{E}}
+\definecolor{col1}{HTML}{a6611a}
+\definecolor{col2}{HTML}{dfc27d}
+\definecolor{col3}{HTML}{80cdc1}
+\definecolor{col4}{HTML}{018571}
+% \pgfplotscreateplotcyclelist{barlist}{%
+%   {1 of Dark2-4, fill=1 of Dark2-4},
+%   {2 of Dark2-4, fill=2 of Dark2-4},
+%   {3 of Dark2-4, fill=3 of Dark2-4},
+%   {4 of Dark2-4, fill=4 of Dark2-4}
+% }
+\pgfplotscreateplotcyclelist{barlist}{%
+  {col1, fill=col1},
+  {col2, fill=col2},
+  {col3, fill=col3},
+  {col4, fill=col4}
+}
+
+% \pgfplotscreateplotcyclelist{barlist}{%
+%   {ACMBlue, fill=ACMBlue},
+%   {ACMPurple, fill=ACMPurple},
+%   {ACMGreen, fill=ACMGreen},
+%   {ACMDarkBlue, fill=ACMDarkBlue}
+% }
