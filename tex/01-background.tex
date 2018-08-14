@@ -88,7 +88,7 @@ mode-$k$ products, its mode-$k$ matricization has a particular structure~\cite{K
 \end{align}
 %
 \begin{table}[ht]
-  \centering%\footnotesize
+  \centering\footnotesize
   \label{tab:notation}
   \begin{tabular}{cl}
     \toprule
@@ -175,9 +175,10 @@ In CP-ALS, we work with the normal equations for \cref{eq:lls}:
 \end{displaymath}
 and solve for $\M{A}^{(k)}$ for given $\M{X}_{(k)}$ and $\M{Z}^{(k)}$.
 By identity \cref{eq:KRGram}, we have 
-\begin{displaymath}
+\begin{equation}
+\label{eqn:nicegram}
 \M{Z}^{(k)\trans}\M{Z}^{(k)} = \M{A}^{(d)\trans}\M{A}^{(d)} \circledast \dots \circledast \M{A}^{(k+1)\trans}\M{A}^{(k+1)} \circledast \M{A}^{(k-1)\trans}\M{A}^{(k-1)} \circledast \cdots \circledast \M{A}^{(1)\trans}\M{A}^{(1)}.
-\end{displaymath}
+\end{equation}
 
 The CP-ALS algorithm~\cite{Kolda:2009} is presented
 in~\cref{alg:cpals}. Note the step where vector $\bm{\lambda}$ stores
@@ -200,18 +201,18 @@ choose random factor matrices.
   \caption{CP-ALS}
   \label{alg:cpals}
   \begin{algorithmic}[1]\footnotesize
-    \Function{$[\bm{\lambda},\set{\M{A}^{(n)}}]=$ CP-ALS}{$\T{X},R$}\Comment{$\T{X}\in\mathbb{R}^{I_1\times \cdots \times I_N}$}
-    \State \label{line:cpals:init} Initialize factor matrices $\M{A}^{(2)}, \dots, \M{A}^{(N)}$
+    \Function{$[\bm{\lambda},\set{\M{A}^{(k)}}]=$ CP-ALS}{$\T{X},r$}\Comment{$\T{X}\in\mathbb{R}^{n_1\times \cdots \times n_d}$}
+    \State \label{line:cpals:init} Initialize factor matrices $\M{A}^{(2)}, \dots, \M{A}^{(d)}$
     \Repeat
-    \For{$n=1,\dots, N$}
-      \State $\M{V} \gets \M{A}^{(N)\trans}\M{A}^{(N)} \circledast \dots \circledast \M{A}^{(n+1)\trans}\M{A}^{(n+1)} \circledast \M{A}^{(n-1)\trans}\M{A}^{(n-1)} \circledast \cdots \circledast \M{A}^{(1)\trans}\M{A}^{(1)}$\label{line:cpals:Gram}
-      \State \label{line:cpals:KR} $\M{Z}^{(n)} \gets \M{A}^{(N)}\odot \cdots  \odot \M{A}^{(n+1)}\odot \M{A}^{(n-1)} \odot \cdots \odot \M{A}^{(1)}$
-      \State \label{line:cpals:MTTKRP} $\M{W} \gets \M{X}_{(n)}\M{Z}^{(n)}$
-      \State \label{line:cpals:solve} Solve $\M{A}^{(n)}\M{V} = \M{W}$ for $\M{A}^{(n)}$        
-      \State Normalize columns of $\M{A}^{(n)}$ and update $\bm{\lambda}$
+    \For{$k=1,\dots, d$}
+      \State $\M{V} \gets \M{A}^{(d)\trans}\M{A}^{(d)} \circledast \dots \circledast \M{A}^{(k+1)\trans}\M{A}^{(k+1)} \circledast \M{A}^{(k-1)\trans}\M{A}^{(k-1)} \circledast \cdots \circledast \M{A}^{(1)\trans}\M{A}^{(1)}$\label{line:cpals:Gram}
+      \State \label{line:cpals:KR} $\M{Z}^{(k)} \gets \M{A}^{(d)}\odot \cdots  \odot \M{A}^{(k+1)}\odot \M{A}^{(k-1)} \odot \cdots \odot \M{A}^{(1)}$
+      \State \label{line:cpals:MTTKRP} $\M{W} \gets \M{X}_{(k)}\M{Z}^{(k)}$
+      \State \label{line:cpals:solve} Solve $\M{A}^{(k)}\M{V} = \M{W}$ for $\M{A}^{(k)}$        
+      \State Normalize columns of $\M{A}^{(k)}$ and update $\bm{\lambda}$
     \EndFor
     \Until termination criteria met
-    \State \textbf{return} $\bm{\lambda}$, factor matrices $\set{\M{A}^{(n)}}$
+    \State \textbf{return} $\bm{\lambda}$, factor matrices $\set{\M{A}^{(k)}}$
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
@@ -282,37 +283,167 @@ The working size of the tensor thus reduces by a
 factor of $n_k / r_k$ at each iteration, with an equivalent reduction in the cost of subsequent SVD steps.
 %
 \subsection{Tensor Train Decomposition}
-The Tensor Train decomposition (TT) factors an order-$d$ tensor into a set of $d$ tensors. The $k$th tensor is denoted $G^{(k)}$, where $G^{(1)}$ and $G^{(d)}$ are of order 2, and all other tensors are of order 3. 
+The Tensor Train decomposition (TT) factors an order-$d$ tensor into a set of $d$ tensors. The $k$th tensor is denoted $\T{G}^{(k)}$, where $\M{G}^{(1)}$ and $\M{G}^{(d)}$ are of order 2 (matrices), and all other tensors are of order 3. 
 
 The input tensor can then be reconstructed via the relation:
 \begin{equation}
 \T{X} \approx \M{G}^{(1)} \times_{2}^1 \T{G}^{(2)} \times_{3}^1 \T{G}^{(3)} \times_3^1 \dots
 \times_3^1 \T{G}^{(d-1)}\times_3^1 \M{G}^{(d)} 
 \end{equation}
-where $\T{X} \times_a^b \T{Y}$ can be computed as $\M{X}_b \M{Y}_a$, or more generally as 
+where $\T{X} \times_a^b \T{Y}$ can be computed as a reordering (`tensorization') of $\M{Y}_{(b)} \M{X}_{(a)}$, or more generally as 
 \begin{align*}
 \T{X}(i_1,\dots,i_d) & \approx  
-\sum_{{k_1}=1}^{r_1} \sum_{{k_2}=1}^{r_2}\cdots\sum_{{k_{d-1}}=1}^{r_{d-1}} \T{G}^{(1)}(i_1,k_1)\T{G}^{(2)}(k_1,i_2,k_2) & \\ & \cdots\T{G}^{(d-1)}(k_{d-2},i_{d-1},k_{d-1})\T{G}^{(d)}(k_{d-1},i_d)
+\sum_{{k_1}=1}^{r_1} \sum_{{k_2}=1}^{r_2}\cdots\sum_{{k_{d-1}}=1}^{r_{d-1}} \M{G}^{(1)}(i_1,k_1)\T{G}^{(2)}(k_1,i_2,k_2) & \\ & \cdots\T{G}^{(d-1)}(k_{d-2},i_{d-1},k_{d-1})\M{G}^{(d)}(k_{d-1},i_d)
 \end{align*}
 where $\M{G}^{(1)}\in \R^{r_1\times n_1}$, $\T{G}^{(k)} \in \R^{r_{k-1}\times n_k \times r_k}$ for $1< k< d$ and $\M{G}^{(d)}\in \R^{R_{d-1}\times n_d}$. The relationship between tensors can be better understood in terms of a tensor network diagram. In this visualization, each node represents a tensor, and each line represents a mode, with the associated mode size. Lines that connect tensors represent the common mode that can be contracted to reconstruct the input tensor:
 \begin{figure}[htbp]
     \center\includegraphics[width=0.80\linewidth]{thpropfigs/tensortrain}
     \caption{Tensor Train Decomposition}
 \end{figure}
-Computing this representation involves a straightforward recursive application of matricization and the skinny SVD.
+The most straightforward way to compute a tensor train decomposition is to flatten the tensor and compute a rank-revealing matrix decomposition of the result. The left factor of this decomposition becomes a new node in the tensor train, while the remaining product is reshaped and used as an input for further iterations. 
+
 \subsection{Randomized Least Squares}
+\label{sec:sketching}
+Sketching is a technique for solving linear algebra problems by constructing 
+a smaller problem whose solution is a 
+reasonable approximation to the original problem with high probability~\cite{sketching}. 
+For instance, a large matrix may be formed by applying random sampling or random 
+projections to form a smaller \emph{sketch} matrix. 
+We focus on the case where a regression
+problem $\min_{\V{x}}\| \M{A}\V{x} - \V{b} \|_2$ (with overdetermined
+$\M{A} \in \mathbb{R}^{n\times d}$) is transformed using some random
+projection $\M{M} \in \mathbb{R}^{\samplesize\times n}$, with $\samplesize\ll
+n$, such that an exact solution to $\min_{\V{x}}\| \M{M}\M{A}\V{x} -
+\M{M}\V{b} \|_2$ is an approximate solution to the original
+problem~\cite{rokhlintygert,DrMaMuSa11,blendenpik}.
+
+
+There are two leading sampling approaches for randomized least squares
+problems. One involves sampling from the coefficient matrix in a
+weighted manner, e.g. by computing (or estimating) \emph{leverage
+  scores} for each row and sampling based on their distribution. The
+other approach, which we have implemented, is to \emph{mix} the
+coefficient matrix with the intention of evenly distributing leverage scores
+across all rows in such a way that \emph{uniform} sampling is
+effective. 
+\begin{definition}
+Given $\M{A} \in \mathbb{R}^{n\times d}, n > d$, the \emph{leverage score} of row $i$ of $\M{A}$ is $l_i = ||\M{U}(i,:)||_2^2$
+for $i \in \{1,\dots ,n\}$ where $\M{U}$ contains the $d$ left singular vectors of $\M{A}$.
+\end{definition}
+Thus, the leverage score of a row corresponds in some sense to the
+importance of that row in constructing the column-space of the
+coefficient matrix. 
+
+In 2007, Drineas et al.~\cite{DrMaMuSa11} presented a relative-error
+least squares algorithm that gives a $1 + \epsilon$
+approximation. They first mix the coefficient matrix using a
+randomized Hadamard transform (discussed later), and then sample 
+\begin{equation}
+\label{eqn:numsamples}
+\bigO{\max\{ d\log{(n)}\log{(d\log{(n)})}, d\log{(nd)}/\epsilon\}}
+\end{equation}
+rows of the resulting matrix before computing the solution using
+normal equations. The dependence of the sampling size on $\epsilon$
+makes this algorithm fairly impractical for typical direct
+solvers. However, subsequent work by Rokhlin and
+Tygert~\cite{rokhlintygert} applied a related sketching strategy to
+the \emph{preconditioning} of a Krylov-subspace method, establishing a
+relationship between sample size and condition number.  
+
+Avron et al.\@ synthesized these concepts into a high-performance
+solver called Blendenpik~\cite{blendenpik}. They first apply a
+randomized Hadamard transform (or similar transform),
+compute a QR decomposition of the result, and use its
+$\M{R}$ factor as a preconditioner
+for the standard LSQR solver. Additionally they show that the
+condition number of their system depends on the \emph{maximal}
+leverage score of the matrix, referred to as \emph{coherence}. 
+\begin{definition}[\cite{coherence,candesrecht}]
+\emph{Coherence} is  the maximum leverage score of $\M{A}$, i.e.,
+\[ \mu(\M{A}) = \max_{i \in \{1,\dots,n\}} l_i, \]
+where $l_i$ is the leverage score of the $i$th row of $\M{A}$. It
+holds that $\frac{d}{n} \leq \mu(\M{A}) \leq 1$. 
+\end{definition}
+Intuitively, if a row of a matrix $\M{A}$ contains the only nonzero in a column then $\mu(\M{A})=1$ and any row-sampling $\M{SA}$ must include that row (which has leverage score 1) or it will be rank deficient. If coherence is close to 1, a uniform row-sampling is likely to be \emph{nearly} rank-deficient, leading to a poorly conditioned reduced-size least squares problem and an inaccurate approximate solution vector. 
+
+In~\cite{caseyb} we show that the standard formulation of CP-ALS
+may increase incoherence, making uniform sampling effective in many
+situations. However, in order to guarantee incoherence (w.h.p.)
+regardless of input, it is necessary to preprocess with a mixing step.  
+
+This mixing strategy relates to a more general class of
+transformations that rely on quality guarantees provided by the
+Johnson-Lindenstrauss Lemma~\cite{jlt}. This lemma specifies a class
+of random projections that preserve the distances between all pairs of
+vectors with reasonable accuracy. The \emph{fast}
+Johnson-Lindenstrauss transform (FJLT) is able to avoid explicit
+matrix multiplications by utilizing efficient algorithms such as the
+fast Fourier transform (FFT), discrete cosine transform (DCT), or
+Walsh-Hadamard Transform (WHT)~\cite{fjlt}. These transforms can
+operate on a vector $\V{x} \in \mathbb{R}^n$ in $\inlineBigO{n\log_2 n}$
+time. What these algorithms have in common is that
+they improve incoherence, mixing information across every element of a vector, while at the
+same time being orthogonal operations (i.e., a change of basis).  
+The theoretical quality guarantees and theoretical computational costs are the same for all fast transforms.
+
+The FJLT consists of three steps. First, each row of the coefficient
+matrix is sign-flipped with probability $1/2$. This is equivalent to
+computing $\M{D}\M{A}$ with diagonal matrix $\M{D}\in
+\mathbb{R}^{n\times n}$, where each diagonal element is $\pm 1$ with
+equal probability. Second, we apply the fast mixing operation
+$\mathcal{F}$. Third we uniformly sample $\samplesize$ rows of the
+result with uniform probability. Thus, the entire operation can be
+written out as $\M{S}\mathcal{F}\M{D}\M{A}$, where $\M{S}$ is a row-sampling operator (containing unit row vectors $\V{e}_{i}$, for each sampled row $i$).
+The reasoning behind first
+applying $\M{D}$ is that input data is often sparse in the frequency
+domain, and randomly flipping the signs of the coefficient matrix is an
+orthogonal operation that spreads out the frequency domain of
+the signal~\cite{fjlt}. 
+% In this paper we will exclusively use the FFT
+% for the $\mathcal{F}$ operation due to its ease of reproducibility and its efficiency in
+% MATLAB. 
+% Though portable, this has the result of making all data complex-valued, which we discuss~\cite{caseyb}.
+% We observed that using alternative transforms had no effect on the quality of our solutions, but real-valued transforms were slower to apply because of a lack of efficient implementations within MATLAB.
+%
 \subsection{Randomized SVD}
-%
-%
-%
-%
-%
-%
+The \MTFSBC requires finding the leading left singular vectors and singular values of the tensor 
+matricization. Halko, Martinsson, and Tropp ~\cite[Alg.~4.1]{halko} present a \emph{randomized range finder} algorithm 
+for estimating the left singular vectors of a matrix $\M{X}$ of size $m \times n$ where $n$ is very large.
+The goal is to find the leading $r$ left singular values where it is assumed that the remaining singular values are small.
+The key idea is to multiply $\M{X}$ on the right
+by a sketching matrix $\M{\Omega}$ of size $n \times q$ where $r < q \ll n$.
+The matrix $\M{\Omega}$ is some appropriate random matrix;
+for instance, it could have i.i.d.\@ entries drawn from a standard normal distribution.
+The result of the multiplication is a much smaller matrix of size $m \times q$ whose $q$ leading left singular vectors approximately include the range of the $r$ leading left singular vectors of $\M{X}$.
+The value of $q-r$ is the \emph{oversampling parameter}, and the is typically small, e.g., less than 20.
+We summarize the method in \cref{alg:RRF}, and its expected error is analyzed in~\cite{halko}.
+
+\begin{algorithm}[htb]
+  \caption{Randomized Range-Finder}\label{alg:RRF}
+  \begin{algorithmic}[1]
+    \Procedure{RRF}{$\M{X}$, $q$} \Comment{$\M{X} \in \mathbb{R}^{m \times  n}$}
+    \State $\M{\Omega} \gets$ suitable random matrix of size ${n \times q}$ 
+    \State $\M{Y} \gets \M{X}\M{\Omega}$
+    \State \label{line:rrf:ortho} $\M{U} \gets$ orthonormal basis of size $m \times q$ for $(\M{Y})$
+    \EndProcedure
+  \end{algorithmic}
+  \label{alg:rrf}
+\end{algorithm}
+
+For this method to be efficient, the desired rank should be small, i.e., $r \ll n$.
+If $m \ll n$, then we know that $r \leq m \ll n$, so this property is satisfied. Indeed, the matrix
+unfoldings in the \MTFSBC have exactly that property since we are working with matrices of roughly 
+$n \times n^{d-1}$ in size. 
 %
 \section{Literature Survey}
-A broad survey of tensor decompositions is provided by Kolda and Bader~\cite{Kolda:2009}. Additional surveys outline specific tensor techniques in machine learning~\cite{nikossurvey}, quantum chemistry~\cite{quantumsurvey}, latent variable models~\cite{Anandk}, and neuroscience~\cite{eegsurvey}. In this proposal we will focus on scalable implementations of three of the most popular tensor decompositions: the \textsc{Candecomp/Parafac} (CP) decomposition~\cite{hitchcock-sum-1927, CANDECOMP, PARAFAC}, the Tucker decomposition~\cite{Tu66}, and the Tensor Train decomposition~\cite{tensortrain}. 
+A broad survey of tensor decompositions is provided by Kolda and Bader~\cite{Kolda:2009}. Additional surveys outline specific tensor techniques in machine learning~\cite{nikossurvey}, quantum chemistry~\cite{quantumsurvey}, latent variable models~\cite{Anandk}, and neuroscience~\cite{eegsurvey}. In this proposal we focus on scalable implementations of three of the most popular tensor decompositions: the \textsc{Candecomp/Parafac} (CP) decomposition~\cite{hitchcock-sum-1927, CANDECOMP, PARAFAC}, the Tucker decomposition~\cite{Tu66}, and the Tensor Train decomposition~\cite{tensortrain}. 
 
-\paragraph{Sketching}
-Sketching is a technique for solving linear algebra problems by constructing a smaller problem whose solution is a reasonable approximation to the original problem with high probability~\cite{sketching}. For instance, a large matrix may be sketched by applying random sampling or random projections to form a smaller sketch matrix. While this approach is suitable for a wide variety of problems, we will focus on two essential building blocks: randomized least squares~\cite{rokhlintygert,DrMaMuSa11,blendenpik}, and the randomized SVD~\cite{halko}. 
+\paragraph{High-Performance CP Decompositions}
+
+\paragraph{High-Performance Tucker Decompositions}
+
+\paragraph{High-Performance Tensor Train Decompositions}
+
+\paragraph{Sketching Methods in Tensor Decomposition}
 
 

@@ -8,10 +8,10 @@ Because randomized methods have been used successfully for solving
 linear least squares problems~\cite{DrMaMuSa11,blendenpik,sketching}, it is natural that they might prove
 beneficial to CP-ALS since its key kernel is the solution of a least
 squares problem. However, the CP-ALS least squares subproblem has a
-special structure that already greatly reduces its cost, so it is unclear whether or not sketching would be beneficial.
+special structure that already greatly reduces its cost (see~\cref{eqn:nicegram}), so it is not obvious that sketching would be beneficial.
 Nevertheless, we find that our randomized algorithms significantly reduce the memory and computational overhead of the CP-ALS process for dense tensors and moreover positively impact algorithmic robustness.
 To the best of our knowledge, this is the first successful application of matrix sketching methods in the context of CP.
-The contributions of this paper are as follows:
+Our contributions are as follows:
 \begin{itemize}
 \item 
 The least squares coefficient matrix in the CP-ALS subproblem is a Khatri-Rao product of factor matrices. 
@@ -34,8 +34,6 @@ The randomized methods converge much more quickly, in only a few
 iterations. 
 The fit is not monotonically increasing for the randomized methods due
 to (small) variations in the solution to each randomized subproblem.
-% See~\cref{sec:experiments} for full details on problem generation and
-% further experiments.
 
 % \begin{figure}[tbhp]
 %   \centering \subfloat[Random $300\times300\times300$ tensor]{\label{fig:tvsf:3d}
