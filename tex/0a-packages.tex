@@ -18,11 +18,34 @@
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{tikz}
+\usetikzlibrary{3d}
+\usetikzlibrary{patterns}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+\makeatletter
+\renewcommand*\thesection{\arabic{section}}
+\newcommand{\gettikzxy}[3]{%
+  \tikz@scan@one@point\pgfutil@firstofone#1\relax
+  \edef#2{\the\pgf@x}%
+  \edef#3{\the\pgf@y}%
+}
+\makeatother
 \usepackage{url}
 \usepackage{pgfplots}
 \usepgfplotslibrary{colorbrewer,colormaps}
-\pgfplotsset{compat=1.13}
-\usetikzlibrary{pgfplots.groupplots}
+\usepgfplotslibrary{statistics}
+\pgfplotsset{every axis plot/.append style={line width=1pt}}
+\pgfplotsset{every axis/.append style={
+    label style={font=\footnotesize},
+    tick label style={font=\footnotesize},  
+    every axis plot post/.style={
+          mark=*,
+          every mark/.style={mark size=1pt}}
+  }}
+
+% \pgfplotsset{compat=1.13}
+% \usetikzlibrary{pgfplots.groupplots}
 \usepackage{pgfplotstable}
 \usepackage{etoolbox}
 \usepackage[normalem]{ulem}

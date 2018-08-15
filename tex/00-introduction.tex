@@ -61,8 +61,8 @@ We propose a line of research to apply sketching techniques to tensor decomposit
 \begin{itemize}
 	\item The leading method for computing the CP decomposition is CP-ALS, which performs iterative least-squares updates in each mode.
 	\item In completed work~\cite{caseyb}, we use methods drawn from \emph{randomized least squares} and apply them to this core computation.
-	\item We show that the tensor structure produces conditions favorable for sketching.
-	\item We also show that tensor dimensionality produces conditions favorable to sampling, which is not necessarily true for matrices.
+	\item We show that the intermediate tensor structure produces conditions favorable for sketching due to both the dimensionality and `mixing' incurred by the Khatri Rao product.
+	\item We introduce a new termination condition for the CP decomposition that uses sampled entries from the original tensor, and probabilistically bound the quality of this condition using the Chernoff-Hoeffding inequality. 
 	\item We demonstrate scalability on real and synthetic data sets.
 	\item We demonstrate the surprising result that this method often works \emph{better} than CP-ALS, returning good solutions more robustly.
 	\item Deliverable: this method is published~\cite{caseyb} and released as part of MATLAB Tensor Toolbox~\cite{TTB_Software}\footnote{\url{http://gitlab.com/tensors/tensor_toolbox}}.

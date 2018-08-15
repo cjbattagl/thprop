@@ -1,17 +1,4 @@
-\usetikzlibrary{3d}
-\usetikzlibrary{patterns}
-\usetikzlibrary{calc}
-\usetikzlibrary{arrows}
-\usetikzlibrary{decorations.pathreplacing}
-\makeatletter
-\renewcommand*\thesection{\arabic{section}}
-\newcommand{\gettikzxy}[3]{%
-  \tikz@scan@one@point\pgfutil@firstofone#1\relax
-  \edef#2{\the\pgf@x}%
-  \edef#3{\the\pgf@y}%
-}
-\makeatother
-\graphicspath{{figs/}}
+% \graphicspath{{figs/}}
 %
 \Crefname{ALC@unique}{Line}{Lines} 
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -100,6 +87,11 @@
 \definecolor{col2}{HTML}{dfc27d}
 \definecolor{col3}{HTML}{80cdc1}
 \definecolor{col4}{HTML}{018571}
+
+\definecolor{cpalsncolor}{HTML}{A6611A}
+\definecolor{cpalsrcolor}{HTML}{DFC27D}
+\definecolor{cprandcolor}{HTML}{80CDC1}
+\definecolor{cprandfcolor}{HTML}{018571}
 % \pgfplotscreateplotcyclelist{barlist}{%
 %   {1 of Dark2-4, fill=1 of Dark2-4},
 %   {2 of Dark2-4, fill=2 of Dark2-4},
