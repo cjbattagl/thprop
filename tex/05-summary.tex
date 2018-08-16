@@ -1,1 +1,31 @@
-Rich: Be sure to include a section at the end that summarizes everything in a succinct way and includes an approximate timeline of tasks to-be-completed. (The summary could be a list or table or a "feature box" with completed stuff "checked off.")
+\begin{itemize}
+\item Randomized CP Decomposition.
+\begin{todolist}
+	\item[\done] Introduce a randomized CP decomposition drawing from randomized least squares.
+	\item[\done] Introduce a `mixed' method for the randomized CP decomposition
+	\item[\done] Establish how to perform sampling within CP-ALS without forming any large matrix products.
+	\item[\done] Benchmark; establish speed and robustness.
+	\item[\done] Introduce a faster, randomized stopping condition and establish theoretical bounds.
+\end{todolist}
+\item Randomized Tucker Decomposition.
+\begin{todolist}
+\item[\done] Introduce a parallel method for sketch-based \MTFSBC that uses a series of TTMs.
+  \item Implement a sketch-based \MTFSBC in distributed memory.
+  \item Develop a cost analysis of this method.
+  \item[\done] Introduce a new parallel method for a sequence of tensor-times-matrix operations that trades extra computation for reduced communication
+  \item Analyze tradeoffs
+  \item Apply our kernel to the Tucker tensor decomposition, benchmark our method on large-scale scientific 
+  data sets
+  \item Demonstrate scaling on synthetic data sets.
+  \item Provide theory to show how the error introduced through randomization can be compensated for.
+\end{todolist}
+\item Randomized Tensor Train Decomposition.
+\begin{todolist}
+  \item Implement the first distributed-memory implementation of the tensor train decomposition.
+  \item Analyze the communication and computation behavior of the `reshape-SVD' method in distributed memory.
+  \item Apply methods from our randomized Tucker decomposition to the tensor train in distributed memory, leveraging the lop-sided dimensionality of the working tensor.
+  \item Benchmark both methods on a supercomputer and analyze/establish tradeoffs.
+\end{todolist}
+\end{itemize}
+
+In all three proposed sections we emphasize the core of this thesis, which is that the dimensionality of tensors lends itself very well to randomized methods, which we propose to demonstrate in both shared and distributed memory.

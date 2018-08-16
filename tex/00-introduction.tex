@@ -5,13 +5,13 @@
   \label{fig:sparseanddense}
 \end{figure*}
 An emerging area of research in computational science considers efficiently computing on data sets that are 
-inherently multi-way-- that is, they can be represented by higher-order \emph{tensors}~\cite{Acar09futuredirections}. 
+inherently multi-way-- that is, they can be represented by higher-order \emph{tensors}~\cite{Acar09futuredirections,Kolda:2009}. 
 %
 % Whereas matrix and block-matrix methods are widespread and well-understood in computational science, a current challenge is to develop \emph{tensor}-level thinking that deals with the unique challenges of tensor data sets~\cite{Acar09futuredirections}. 
 %
 % Tensor \emph{decompositions} are a leading method for compressing or finding structure within these 
 % data sets, and increasing the computational scalability of these decompositions is an open research problem.
-Tensor \emph{decompositions} are a powerful tool for the analysis of multi-way data~\cite{Kolda:2009}, and generally attempt to express an input tensor in a form that is lower-dimensional or of a more desirable structure. The resulting decomposition may be valuable for its interpretability (e.g., for factor analysis), or as a compressed format that alleviates the curse of dimensionality. Two of the most popular decompositions are visualized in~\cref{fig:decomps}, and the storage costs of the decompositions mentioned in this proposal are shown in~\cref{tab:storagecosts}, where the original tensor has dimension $n_k$ in mode $k$ and the decomposition has rank $r_k$ in mode $k$. Typically, $r_k << n_k$.
+Tensor \emph{decompositions} are a powerful tool for the analysis of multi-way data, with many applications including including chemometrics~\cite{chemometrics}, quantum chemistry~\cite{quantumsurvey}, neuroscience~\cite{eegsurvey}, healthcare~\cite{rubik}, and deep learning~\cite{ttnn}. Tensor decompositions generally attempt to express an input tensor in a form that is lower-dimensional or of a more desirable structure. The resulting decomposition may be valuable for its interpretability (e.g., for factor analysis), or as a compressed format that alleviates the curse of dimensionality. Two of the most popular decompositions are visualized in~\cref{fig:decomps}, and the storage costs of the decompositions mentioned in this proposal are shown in~\cref{tab:storagecosts}, where the original tensor has dimension $n_k$ in mode $k$ and the decomposition has rank $r_k$ in mode $k$. Typically, $r_k << n_k$.
 
 \begin{table}[h]
 \centering\footnotesize

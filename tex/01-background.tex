@@ -198,6 +198,8 @@ in the rank-$(r{\times} {\cdots} {\times} r)$ HOSVD (see~\cref{sec:hosvd}).
 A less expensive but less effective initialization is to
 choose random factor matrices.
 
+Finally, a termination criterion must be supplied. For instance, a simple way to check convergence is to see when the change in residual error~(\cref{eqn:residual}) becomes negligible.
+
 \begin{algorithm}
   \caption{CP-ALS}
   \label{alg:cpals}
@@ -218,6 +220,8 @@ choose random factor matrices.
   \end{algorithmic}
 \end{algorithm}
 
+Because of the elegant least squares structure in~\cref{eqn:nicegram}, the bottleneck for CP-ALS is generally in performing lines 6-7, which we refer to as the matricized Khatri-Rao product (MTTKRP). High-performance implementations of CP-ALS generally target the MTTKRP~\cite{SPLATT,dimtree,koby}. 
+
 
 \subsection{The Tucker Decomposition} \label{sec:hosvd} 
 \input{tikz/tucker.tex} %%%%%% Tucker Figure %%%%%%
@@ -234,7 +238,7 @@ The \hosvd~\cite{Lathauwer00amultilinear} is a method for computing the Tucker d
 of SVDs of
 unfolded tensors to compute the orthogonal factor matrices $\Mn{U}{k}$ whose 
 columns approximately span the columns of the unfolded tensor $\M{X}_{(k)}$ for each mode $k$. We will refer to this computation as the Mode-wise Truncated Fiber Space Basis Computation (\MTFSBC).
-Following this operation, the resulting factor matrices are applied to the input tensor to compress the original data into the core $\T{G}$: $\T{G} \gets \T{X} \times \{ \Mn{U}{k} \}$. 
+Following this operation, the resulting factor matrices are applied to the input tensor to compress the original data into the core $\T{G}$: $\T{G} \gets \T{X} \times \{ \Mn{U}{k}^\trans \}$. 
 
 Just as we would compress a matrix by truncating its SVD, we can truncate the factors 
 $\Mn{U}{k}$ so that $\T{G}$ is a smaller core ($r_k < n_k$), a method we refer to as the 
@@ -283,6 +287,9 @@ such that the $k$th TTM occurs within the $k$th iteration of the for loop.
 The working size of the tensor thus reduces by a 
 factor of $n_k / r_k$ at each iteration, with an equivalent reduction in the cost of subsequent SVD steps.
 %
+
+
+
 \subsection{Tensor Train Decomposition}
 The Tensor Train decomposition (TT) factors an order-$d$ tensor into a set of $d$ tensors. The $k$th tensor is denoted $\T{G}^{(k)}$, where $\M{G}^{(1)}$ and $\M{G}^{(d)}$ are of order 2 (matrices), and all other tensors are of order 3. 
 
@@ -302,6 +309,8 @@ where $\M{G}^{(1)}\in \R^{r_1\times n_1}$, $\T{G}^{(k)} \in \R^{r_{k-1}\times n_
     \caption{Tensor Train Decomposition}
 \end{figure}
 The most straightforward way to compute a tensor train decomposition is to flatten the tensor and compute a rank-revealing matrix decomposition of the result. The left factor of this decomposition becomes a new node in the tensor train, while the remaining product is reshaped and used as an input for further iterations. 
+
+Tensor network representations such as the tensor train are particularly valuable in cases where the order of a tensor is so high that the dense core of the Tucker decomposition is not feasible to construct. Among many applications it has proven useful in deep learning~\cite{ttrnn,ttnn}, supervised learning~\cite{supervisedtt}, and control systems~\cite{ttcontrol}. It has also proven useful for the approximation of functions~\cite{GoKaMa15}.
 
 \subsection{Randomized Least Squares}
 \label{sec:sketching}
@@ -432,19 +441,40 @@ We summarize the method in \cref{alg:RRF}, and its expected error is analyzed in
 \end{algorithm}
 
 For this method to be efficient, the desired rank should be small, i.e., $r \ll n$.
-If $m \ll n$, then we know that $r \leq m \ll n$, so this property is satisfied. Indeed, the matrix
+If $m \ll n$, then we know that $r \leq m \ll n$, so this property is satisfied. Indeed, we will observe that the matrix
 unfoldings in the \MTFSBC have exactly that property since we are working with matrices of roughly 
 $n \times n^{d-1}$ in size. 
+
+Sketching methods of this nature have become popular within matrix decompositions~\cite{tropp2}, but have only recently seen use in tensor methods or distributed computation. 
 %
 \section{Literature Survey}
-A broad survey of tensor decompositions is provided by Kolda and Bader~\cite{Kolda:2009}. Additional surveys outline specific tensor techniques in machine learning~\cite{nikossurvey}, quantum chemistry~\cite{quantumsurvey}, latent variable models~\cite{Anandk}, and neuroscience~\cite{eegsurvey}. In this proposal we focus on scalable implementations of three of the most popular tensor decompositions: the \textsc{Candecomp/Parafac} (CP) decomposition~\cite{hitchcock-sum-1927, CANDECOMP, PARAFAC}, the Tucker decomposition~\cite{Tu66}, and the Tensor Train decomposition~\cite{tensortrain}. 
+A broad survey of tensor decompositions is provided by Kolda and Bader~\cite{Kolda:2009}. Additional papers outline specific tensor techniques in machine learning~\cite{nikossurvey}, quantum chemistry~\cite{quantumsurvey}, latent variable models~\cite{Anandk}, and neuroscience~\cite{eegsurvey}. In this proposal we focus on scalable implementations of three of the most popular tensor decompositions: the \textsc{Candecomp/Parafac} (CP) decomposition~\cite{hitchcock-sum-1927, CANDECOMP, PARAFAC}, the Tucker decomposition~\cite{Tu66}, and the Tensor Train decomposition~\cite{tensortrain}. 
 
-\paragraph{High-Performance CP Decompositions}
+\paragraph{Scalable CP Decompositions}
+There are many methods that improve performance of the CP decomposition by finding efficient ways of computing MTTKRP kernel within CP-ALS~\cite{SPLATT,dimtree,koby,jiajia2}. Since we propose randomized methods that actually reduce flop count, we survey those methods in more detail:
 
-\paragraph{High-Performance Tucker Decompositions}
+Vervliet and Lauthauwer present a stochastic gradient descent (SGD) algorithm for CP that samples blocks from the original tensor to update corresponding blocks of the factor matrices~\cite{VeLa16}. This approach is similar in spirit to CPRAND, but takes an altogether different approach to the randomization. They use \emph{contiguous} samples in the block updates and finer control over step sizes. They also update only a portion of each factor matrix in each iteration.
 
-\paragraph{High-Performance Tensor Train Decompositions}
+Another framework that draws from SGD is FlexiFaCT, which targets coupled tensor decompositions for parallel computation~\cite{flexifact}
 
-\paragraph{Sketching Methods in Tensor Decomposition}
+Cheng et al.~have recently applied a leverage score-based sampling to the least-squares step of the sparse CP decomposition by showing how leverage scores of an unfolded tensor can be estimated by the leverage scores of the factor matrices~\cite{spals}. This approach is similar to the way that we bound the coherence of Khatri-Rao products. 
+Reynolds et al.~also use randomization within CP-ALS, specifically for the case of rank reduction, where the input to the algorithm is already in CP format \cite{RDB16}.
 
+Wang et al.~have applied sketching methods to \emph{orthogonal} tensors with provable guarantees~\cite{anand}. Song et al.~show that this sketch can be computed without reading the entire tensor (in sublinear time) under certain conditions~\cite{sublinear}.
 
+An alternative to sketching is to compress the tensor using lossy methods before computation. Zhou and Cichocki examine the effectiveness of performing a CP decomposition on a compressed representation of the data using the lossy Tucker decomposition to produce a smaller problem size~\cite{bigtens}. ParCube~\cite{parcube} compresses the original tensor by directly sampling and performs a decomposition on the result.
+Another useful approach for high-order tensors is known as tensor reshaping, that can cast much of the computation in terms of three-way tensors \cite{PTC13b}.
+
+\paragraph{Scalable Tucker Decompositions}
+The current state of the art for the distributed, deterministic dense \hosvd is TuckerMPI, based on the work of Austin, Ballard, and Kolda~\cite{AuBaKo16}, whereas Kaya and Ucar have optimized the Tucker decomposition in distributed memory for sparse tensors~\cite{kaya1}. In shared memory, optimizations have targeted the core formation step~\cite{intensli}, or developing compressed data structures~\cite{shadentucker}.  
+
+Zhou, Cichocki, and Xie have previously implemented an HOSVD based on the Randomized Ranger Finder algorithm~\cite{bigtens}. They implement RandTucker, which performs a Randomized Range Finder on the \emph{full} matricizations of the tensor, and RandTucker2i, which performs a second iteration after projecting with the first set of estimated factor matrices. 
+
+Vervliet, Debals, and De Lauthawer similarly implement a randomized Tucker in their serial MATLAB toolbox TensorLab3\cite{DBLP:conf/acssc/VervlietDL16}. This allows the user to perform an arbitrary number of iterations that improve the final result. Navasca and Pompey~\cite{Navasca2015} also present a serial HOSVD implementation that uses the randomized SVD on the matricizations in each mode, but it does not take any optimizations into account. Other randomized methods for computing the HOSVD have focused on sampling directly from the tensor~\cite{Tsou10,DM07}.
+
+Our proposed work differs from earlier approaches~\cite{bigtens,DBLP:conf/acssc/VervlietDL16,Navasca2015} in that we target a distributed-memory implementation that performs sketching as a series of small TTMs (equivalent to a Kronecker product of sketching matrices). We also propose to target optimization of the communication involved in this sketching step. 
+
+\paragraph{Scalable Tensor Train Decompositions}
+There is not much literature specifically on high-performance tensor train decompositions, so it is a valuable area for future work. Phan, et al. have compared various methods~\cite{Phan2016TensorNF}, but in general the emphasis has been placed on algorithms that operate efficiently by \emph{using} a tensor train representation~\cite{cichocki2}. 
+
+Randomization has been applied to the Tensor Train decomposition in existing work~\cite{HSW17}, but the emphasis has not been on performance. There is also no existing distributed implementation of these methods. Finally, a related tensor network decomposition, the Hierarchical Tucker decomposition, has been successfully targeted with sampling methods~\cite{SHT}.
