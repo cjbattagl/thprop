@@ -6,23 +6,26 @@
 	\item[\done] Establish how to perform sampling within CP-ALS without forming any large matrix products.
 	\item[\done] Benchmark; establish speed and robustness.
 	\item[\done] Introduce a faster, randomized stopping condition and establish theoretical bounds.
+	\item[\done] Deliverable: Include methods in MATLAB Tensor Toolbox.
 \end{todolist}
 \item Randomized Tucker Decomposition.
 \begin{todolist}
 \item[\done] Introduce a parallel method for sketch-based \MTFSBC that uses a series of TTMs.
-  \item Implement a sketch-based \MTFSBC in distributed memory.
-  \item Develop a cost analysis of this method.
+  \item[\done] Implement a sketch-based \MTFSBC in distributed memory.
+  \item[\done] Develop a cost analysis of this method.
   \item[\done] Introduce a new parallel method for a sequence of tensor-times-matrix operations that trades extra computation for reduced communication
   \item Analyze tradeoffs
   \item Apply our kernel to the Tucker tensor decomposition, benchmark our method on large-scale scientific 
   data sets
   \item Demonstrate scaling on synthetic data sets.
   \item Provide theory to show how the error introduced through randomization can be compensated for.
+  \item Deliverable: Include HOSVD-Sketch algorithm in TuckerMPI.
 \end{todolist}
 \item Randomized Tensor Train Decomposition.
 \begin{todolist}
   \item Implement the first distributed-memory implementation of the tensor train decomposition.
   \item Analyze the communication and computation behavior of the `reshape-SVD' method in distributed memory.
+  \item Analyze possibilities for randomized least squares in the `sweeping' tensor train algorithm.
   \item Apply methods from our randomized Tucker decomposition to the tensor train in distributed memory, leveraging the lop-sided dimensionality of the working tensor.
   \item Benchmark both methods on a supercomputer and analyze/establish tradeoffs.
 \end{todolist}

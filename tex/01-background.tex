@@ -291,7 +291,7 @@ factor of $n_k / r_k$ at each iteration, with an equivalent reduction in the cos
 
 
 \subsection{Tensor Train Decomposition}
-The Tensor Train decomposition (TT) factors an order-$d$ tensor into a set of $d$ tensors. The $k$th tensor is denoted $\T{G}^{(k)}$, where $\M{G}^{(1)}$ and $\M{G}^{(d)}$ are of order 2 (matrices), and all other tensors are of order 3. 
+The Tensor Train decomposition (TT) factors an order-$d$ tensor into a set of $d$ tensors. The $k$th tensor is denoted $\T{G}^{(k)}$, where $\M{G}^{(1)}$ and $\M{G}^{(d)}$ are of order 2 (matrices), and all other tensors are of order 3. This representation has its roots in the MPS formulation in quantum physics~\cite{PhysRevLett.75.3537}.
 
 The input tensor can then be reconstructed via the relation:
 \begin{equation}
@@ -308,7 +308,7 @@ where $\M{G}^{(1)}\in \R^{r_1\times n_1}$, $\T{G}^{(k)} \in \R^{r_{k-1}\times n_
     \center\includegraphics[width=0.80\linewidth]{thpropfigs/tensortrain}
     \caption{Tensor Train Decomposition}
 \end{figure}
-The most straightforward way to compute a tensor train decomposition is to flatten the tensor and compute a rank-revealing matrix decomposition of the result. The left factor of this decomposition becomes a new node in the tensor train, while the remaining product is reshaped and used as an input for further iterations. There are also iterative methods that solve using a sequence of updates, including least squares~\cite{dttals1,ttals}. These generally operate by initializing random carriages $\T{G}^{(k)}$ and then performing sweeps over each carriage in sequence, a process closely related to DMRG in quantum physics~\cite{dmrg}. More scalable methods exist that look at only a portion of the data~\cite{ttcross}. 
+The most straightforward way to compute a tensor train decomposition is to flatten the tensor and compute a rank-revealing matrix decomposition of the result (as illustrated later in~\cref{fig:ttsequence}). The left factor of this decomposition becomes a new node in the tensor train, while the remaining product is reshaped and used as an input for further iterations. There are also iterative methods that solve using a sequence of updates, including least squares~\cite{dttals1,ttals}. These generally operate by initializing random carriages $\T{G}^{(k)}$ and then performing sweeps over each carriage in sequence, a process closely related to DMRG in quantum physics~\cite{dmrg}. More scalable methods exist that look at only a portion of the data~\cite{ttcross}. 
 
 Tensor network representations such as the tensor train are particularly valuable in cases where the order of a tensor is so high that the dense core of the Tucker decomposition is not feasible to construct. Among many applications it has proven useful in deep learning~\cite{ttrnn,ttnn}, supervised learning~\cite{supervisedtt}, and control systems~\cite{ttcontrol}. It has also proven useful for the approximation of functions~\cite{GoKaMa15}.
 
@@ -416,6 +416,7 @@ the signal~\cite{fjlt}.
 % We observed that using alternative transforms had no effect on the quality of our solutions, but real-valued transforms were slower to apply because of a lack of efficient implementations within MATLAB.
 %
 \subsection{Randomized SVD}
+\label{sec:randsvd}
 The \MTFSBC requires finding the leading left singular vectors and singular values of the tensor 
 matricization. Halko, Martinsson, and Tropp ~\cite[Alg.~4.1]{halko} present a \emph{randomized range finder} algorithm 
 for estimating the left singular vectors of a matrix $\M{X}$ of size $m \times n$ where $n$ is very large.
