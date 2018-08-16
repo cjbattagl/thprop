@@ -17,10 +17,10 @@ Tensor \emph{decompositions} are a powerful tool for the analysis of multi-way d
 \centering\footnotesize
 \begin{tabular}{l l}
 \textbf{Representation} & \textbf{Storage Cost} \\ \hline
- \text{Original Tensor} &  $\prod_k n_k$ \\
- \text{CP} & $\sum_k r_kn_k$ \\
- \text{Tucker} & $\sum_k r_kn_k + \prod_k r_k$  \\
- \text{Tensor Train} &  $n_1 r_1 + n_d r_d + \sum_{k=2}^{d-1}r_{k-1}r_kn_k$
+ \text{Original Tensor} &  $\prod_k n_k = \bigO{n^d}$ \\
+ \text{CP} & $\sum_k r_kn_k = \bigO{nr}$ \\
+ \text{Tucker} & $\sum_k r_kn_k + \prod_k r_k = \bigO{r^d}$  \\
+ \text{Tensor Train} &  $n_1 r_1 + n_d r_d + \sum_{k=2}^{d-1}r_{k-1}r_kn_k = \bigO{nr^2}$
 \end{tabular}
 \caption{Storage costs of tensor decompositions in this proposal.}
 \label{tab:storagecosts}
